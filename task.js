@@ -1,0 +1,9 @@
+<task
+  key={task.id}
+  task={task}
+  boardId={board.id}
+  deleteTask={deleteTask}
+  handleDragStart={handleDragStart}
+  handleDrop={handleDrop}
+  editTask={editTask}
+/>
