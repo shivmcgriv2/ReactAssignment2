@@ -1,0 +1,10 @@
+<Board
+  key={board.id}
+  board={board}
+  addTask={addTask}
+  deleteTask={deleteTask}
+  deleteBoard={deleteBoard}
+  drag={drag}
+  Drop={Drop}
+  editTask={editTask}
+/>
