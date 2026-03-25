@@ -24,10 +24,9 @@ function rename (id,title){
 // if id is the same it will delete the board
 function deleteboard(id){
     setBoards(boards.filter(b=>b.id !== id));
-
 }
 
-// structure of board
+// structure of board 
 const [boards, set_boards ] = React.useState([
     {
         id: "board1structure",
@@ -39,11 +38,40 @@ const [boards, set_boards ] = React.useState([
                 description: "5 things to do",
                 created_At: "2026-03-20",
                 due_date: "2027-03-20"
+            },
+            {
+                id: "inprogress",
+                title: "in progress",
+                description: "in progress",
+                created_At: "2026-03-20",
+                due_date: "2027-03-20"
+            },
+            {
+                id: "done",
+                title: "done",
+                description: "5 things to do",
+                created_At: "2026-03-20",
+                due_date: "2027-03-20"
             }
         ]
+        
 
     }
-]);
+    
+]); 
+
+
+
+
+/*const {useState, useAffect} = React;
+function App(){
+    const boardd = [
+        { id: "to_do”, title: "todo", tasks: [] },
+            { id: "in_progress”, title: "inprogress", tasks: [] },
+                { id: "done”, title: "done", tasks: [] }
+    ];
+}
+*/
 
 // add a task
 function addTask(BoardId, task){
@@ -107,7 +135,5 @@ const deleteTask = (BoardId, taskId) => {
     return board;
   }));
 };
-
-// 3.3 Drag-and-Drop Functionality
 
 
