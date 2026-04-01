@@ -66,41 +66,42 @@ function App() {
   };
 
   // 3.3: DRAG HANDLER whenever User drops task
-  const handleDrop = (e, targetBoardId) => {
-    e.preventDefault();
+  const handleDrop = (e, targetBoardId, targetTaskId = null) => {
+  e.preventDefault();
 
-    if (!draggedTaskId || !draggedFromBoardId) return;
+  if (!draggedTaskId || !draggedFromBoardId) return;
 
-    // Find the task being dragged
-    const taskToMove = boards
-      .find(b => b.id === draggedFromBoardId)
-      ?.tasks.find(t => t.id === draggedTaskId);
+  const taskToMove = boards
+    .find(b => b.id === draggedFromBoardId)
+    ?.tasks.find(t => t.id === draggedTaskId);
 
-    if (!taskToMove) return;
+  if (!taskToMove) return;
 
-    // Update boards. Remove from source, add to target
-    const updatedBoards = boards.map(board => {
-      // Remove from source board
-      if (board.id === draggedFromBoardId) {
-        return {
-          ...board,
-          tasks: board.tasks.filter(task => task.id !== draggedTaskId)
-        };
-      }
-      // Add to target board
-      if (board.id === targetBoardId) {
-        return {
-          ...board,
-          tasks: [...board.tasks, taskToMove]
-        };
-      }
-      return board;
-    });
+  const updatedBoards = boards.map(board => {
+    // Same board — reorder
+    if (board.id === draggedFromBoardId && board.id === targetBoardId) {
+      const tasks = board.tasks.filter(t => t.id !== draggedTaskId);
+      const insertIndex = targetTaskId
+        ? tasks.findIndex(t => t.id === targetTaskId)
+        : tasks.length;
+      tasks.splice(insertIndex, 0, taskToMove);
+      return { ...board, tasks };
+    }
+    // Remove from source board
+    if (board.id === draggedFromBoardId) {
+      return { ...board, tasks: board.tasks.filter(t => t.id !== draggedTaskId) };
+    }
+    // Add to target board
+    if (board.id === targetBoardId) {
+      return { ...board, tasks: [...board.tasks, taskToMove] };
+    }
+    return board;
+  });
 
-    setBoards(updatedBoards);
-    setDraggedTaskId(null);
-    setDraggedFromBoardId(null);
-  };
+  setBoards(updatedBoards);
+  setDraggedTaskId(null);
+  setDraggedFromBoardId(null);
+};
 
   // Counters
   const totalBoards = boards.length;
