@@ -106,6 +106,20 @@ function App() {
   const totalBoards = boards.length;
   const totalTasks = boards.reduce((sum, b) => sum + b.tasks.length, 0);
 
+// New state for the add board input
+const [newBoardTitle, setNewBoardTitle] = React.useState('');
+
+const today = new Date();
+const totalOverdue = boards.reduce((sum, b) =>
+  sum + b.tasks.filter(t => t.due_date && new Date(t.due_date) < today).length, 0);
+const totalDueSoon = boards.reduce((sum, b) =>
+  sum + b.tasks.filter(t => {
+    if (!t.due_date) return false;
+    const due = new Date(t.due_date);
+    const diff = (due - today) / (1000 * 60 * 60 * 24);
+    return diff >= 0 && diff <= 3;
+  }).length, 0);
+  
   //Board Operations
   function addBoard(title) {
     const newBoard = {
@@ -182,27 +196,64 @@ function App() {
 
   // ========== Render ==========
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Kanban Board</h1>
-      <p>Boards: {totalBoards} | Tasks: {totalTasks}</p>
+  <div style={{ padding: '20px' }}>
+    <h1>Kanban Board</h1>
 
-      <div style={{ display: 'flex', gap: '20px', overflowX: 'auto' }}>
-        {boards.map(board => (
-          <Board
-            key={board.id}
-            board={board}
-            addTask={addTask}
-            deleteTask={deleteTask}
-            deleteBoard={deleteBoard}
-            handleDragStart={handleDragStart}
-            handleDragOver={handleDragOver}
-            handleDrop={handleDrop}
-            editTask={editTask}
-          />
-        ))}
-      </div>
+    {/* 3.0 Counters */}
+    <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+      {[
+        { label: 'Boards', value: totalBoards },
+        { label: 'Tasks', value: totalTasks },
+        { label: 'Due Soon', value: totalDueSoon },
+        { label: 'Overdue', value: totalOverdue },
+      ].map(c => (
+        <div key={c.label} style={{ padding: '10px 20px', background: '#fff', border: '1px solid #ddd', borderRadius: '6px', minWidth: '80px', textAlign: 'center' }}>
+          <div style={{ fontSize: '22px', fontWeight: 'bold' }}>{c.value}</div>
+          <div style={{ fontSize: '12px', color: '#888' }}>{c.label}</div>
+        </div>
+      ))}
     </div>
-  );
+
+    {/* 3.1 Add Board UI */}
+    <div style={{ marginBottom: '20px', display: 'flex', gap: '8px' }}>
+      <input
+        type="text"
+        placeholder="New board title..."
+        value={newBoardTitle}
+        onChange={(e) => setNewBoardTitle(e.target.value)}
+        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc', width: '200px' }}
+      />
+      <button
+        onClick={() => {
+          if (!newBoardTitle.trim()) return;
+          addBoard(newBoardTitle.trim());
+          setNewBoardTitle('');
+        }}
+        style={{ padding: '8px 16px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+      >
+        + Add Board
+      </button>
+    </div>
+
+    {/* Boards */}
+    <div style={{ display: 'flex', gap: '20px', overflowX: 'auto' }}>
+      {boards.map(board => (
+        <Board
+          key={board.id}
+          board={board}
+          addTask={addTask}
+          deleteTask={deleteTask}
+          deleteBoard={deleteBoard}
+          renameBoard={rename}
+          handleDragStart={handleDragStart}
+          handleDragOver={handleDragOver}
+          handleDrop={handleDrop}
+          editTask={editTask}
+        />
+      ))}
+    </div>
+  </div>
+);
 }
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
