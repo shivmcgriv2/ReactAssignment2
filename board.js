@@ -70,6 +70,8 @@ function Board({ board, addTask, deleteTask, deleteBoard, renameBoard, handleDra
             boardId={board.id}
             deleteTask={deleteTask}
             handleDragStart={handleDragStart}
+            handleDragOver={handleDragOver}
+            handleDrop={handleDrop}
             editTask={editTask}
           />
         ))}
