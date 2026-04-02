@@ -1,3 +1,6 @@
+ReactAssignment2
+
+
 Sebastian Dorata 219015999, Shiv Sahota 220332607, Ahmad Farjam Jailani, 219583251.
 
 https://github.com/shivmcgriv2/ReactAssignment2
