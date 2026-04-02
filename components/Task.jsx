@@ -1,11 +1,15 @@
-function Task({ task, boardId, deleteTask, handleDragStart, editTask }) {
+function Task({ task, boardId, deleteTask, handleDragStart, editTask, handleDragOver, handleDrop }) {
   const isDueOverdue = task.due_date && new Date(task.due_date) < new Date();
 
   return (
     <div
-      // 3.3: Make this element draggable
       draggable="true"
       onDragStart={(e) => handleDragStart(e, task.id, boardId)}
+      onDragOver={handleDragOver}
+      onDrop={(e) => {
+        e.stopPropagation(); // prevent board's onDrop from also firing
+        handleDrop(e, boardId, task.id);
+      }}
       style={{
         backgroundColor: '#fff',
         border: '1px solid #ddd',
